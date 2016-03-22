@@ -17,7 +17,7 @@ class GameWidget(FloatLayout):
         for i in xrange(num_obstacles):
             # generate all obstacles above screen
             space = randint(self.ball.width,self.ball.width*8.5)
-            height = 600 - (i * self.ball.height * 1.5)
+            height = 600 + (i * self.ball.height * 1.5)
             
             ob1 = Obstacle(pos=(space,height))
             ob2 = Obstacle(pos=(self.ball.width*-9.3+space,height))
