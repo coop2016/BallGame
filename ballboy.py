@@ -10,11 +10,11 @@ import math
 class GameWidget(FloatLayout):
     
     ob1 = ObjectProperty(None)
+    num_obstacles = 8
     
     
     def _generate_obstacles(self, vel=(0,4)):
-        num_obstacles = int(math.floor(1/(self.ball.size_hint[1]*3.3)) + 1)
-        for i in xrange(num_obstacles):
+        for i in xrange(self.num_obstacles):
             # generate all obstacles above screen
             space = randint(self.ball.width,self.ball.width*8.5)
             height = 600 + (i * self.ball.height * 1.5)
@@ -26,6 +26,8 @@ class GameWidget(FloatLayout):
             
             self.obR.append(ob1)
             self.obL.append(ob2)
+            
+            print self.obR[i]
     
     def __init__(self, **kwargs):
         super (GameWidget, self).__init__(**kwargs)
@@ -44,8 +46,12 @@ class GameWidget(FloatLayout):
     #    self.pos = Vector(*self.velocity) + self.pos
         
     def update(self, dt):
-        num_obstacles = int(math.floor(1/(self.ball.size_hint[1]*3)) + 1)
-        for i in xrange(num_obstacles):
+        
+        for i in xrange(self.num_obstacles):
+            #randX = randint(self.ball.width,self.ball.width*8.5)
+            #randY = self.ball.width*-9.3 + randX
+            #print randX
+            #print randY
             self.obR[i].move()
             self.obL[i].move()
         
@@ -56,7 +62,7 @@ class Obstacle(Widget):
 
     # velocity of the ball on x and y axis
     velocity_x = NumericProperty(0)
-    velocity_y = NumericProperty(-1)
+    velocity_y = NumericProperty(-5)
 
     # referencelist property so we can use ball.velocity as
     # a shorthand, just like e.g. w.pos for w.x and w.y
@@ -65,7 +71,11 @@ class Obstacle(Widget):
     # ``move`` function will move the ball one step. This
     #  will be called in equal intervals to animate the ball
     def move(self):
-        self.pos = Vector(*self.velocity) + self.pos
+        x,y = self.pos
+        if y < -30:
+            self.pos = (x,y+1200)
+        else:
+            self.pos = Vector(*self.velocity) + self.pos
 
 class Ball(Widget):
     pass
