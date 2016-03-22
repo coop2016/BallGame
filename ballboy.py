@@ -3,28 +3,29 @@ from kivy.uix.widget import Widget
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.vector import Vector
-from kivy.properties import ObjectProperty
+from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
 from random import randint
 import math
 
 class GameWidget(FloatLayout):
     
-    # ob1 = ObjectProperty(None)
+    ob1 = ObjectProperty(None)
     
     
     def _generate_obstacles(self, vel=(0,4)):
-        num_obstacles = int(math.floor(1/(self.ball.size_hint[1]*3)) + 1)
+        num_obstacles = int(math.floor(1/(self.ball.size_hint[1]*3.3)) + 1)
         for i in xrange(num_obstacles):
             # generate all obstacles above screen
             space = randint(self.ball.width,self.ball.width*8.5)
             height = 600 - (i * self.ball.height * 1.5)
             
-            self.ob1 = Obstacle(pos=(space,height))
+            ob1 = Obstacle(pos=(space,height))
             ob2 = Obstacle(pos=(self.ball.width*-9.3+space,height))
-            self.add_widget(self.ob1)
+            self.add_widget(ob1)
             self.add_widget(ob2)
             
-            # self.append(ob1)
+            self.obR.append(ob1)
+            self.obL.append(ob2)
     
     def __init__(self, **kwargs):
         super (GameWidget, self).__init__(**kwargs)
@@ -45,20 +46,29 @@ class GameWidget(FloatLayout):
     def update(self, dt):
         num_obstacles = int(math.floor(1/(self.ball.size_hint[1]*3)) + 1)
         for i in xrange(num_obstacles):
-            self.obR
-            self.ob1.move(dt)
+            self.obR[i].move()
+            self.obL[i].move()
         
     #def serve_ball(self, vel=(0,4)):
      #   self.ob1.velocity = Vector(0,4).rotate(randint(0,360))
-    
+
 class Obstacle(Widget):
-    def move(self, dt):
-        self.center_y += 0.01 * dt
-    pass
+
+    # velocity of the ball on x and y axis
+    velocity_x = NumericProperty(0)
+    velocity_y = NumericProperty(-1)
+
+    # referencelist property so we can use ball.velocity as
+    # a shorthand, just like e.g. w.pos for w.x and w.y
+    velocity = ReferenceListProperty(velocity_x, velocity_y)
+
+    # ``move`` function will move the ball one step. This
+    #  will be called in equal intervals to animate the ball
+    def move(self):
+        self.pos = Vector(*self.velocity) + self.pos
 
 class Ball(Widget):
     pass
-
 
 class BallGame(App):
     def build(self):
