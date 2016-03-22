@@ -2,9 +2,15 @@
 
 <Ball>:
     size_hint: 0.05,0.05
-    size:50,50
     canvas:
         Ellipse:
             pos: self.pos
             size: self.size
             
+<Obstacle>:
+    size_hint: 1,0.05
+    size:50,50
+    canvas:
+        Rectangle:
+            size: self.size
+            pos: self.pos
